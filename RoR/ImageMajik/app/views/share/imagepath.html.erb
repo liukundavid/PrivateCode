@@ -1,0 +1,112 @@
+<script type="text/javascript">
+
+//share an image with a friend
+function shareimage(friendid,ownerid,imageid) {
+var image = new FormData();
+image.append("friend_id", friendid);
+image.append("owner_id", ownerid);
+image.append("image_id", imageid);
+  $.ajax({
+	url: '/shareimage',
+  type: 'POST',
+  data: image,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+  },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+	});
+} 
+
+//cancel the sharing image 
+function cancelshareimage(friendid,imageid) {
+var image = new FormData();
+image.append("friend_id", friendid);
+image.append("image_id", imageid);
+  $.ajax({
+	url: '/cancelshareimage',
+  type: 'DELETE',
+  data: image,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+	});
+} 
+
+</script>
+
+<p id="notice" style="display:none" ><%= notice %></p>
+
+<div>
+	<div class="jumbotron" style="float:left;">
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+            <% if current_user.pending_friends.length == 0%>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+            <% elsif current_user.pending_friends.length > 0 %>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+            <% end %>
+            <a href="<%=new_folder_path%>" class="list-group-item active">Create A New Album</a>
+             <a href="<%=folders_path%>" class="list-group-item" style="font-size:14px">Back to Albums</a>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <li class="list-group-item" style="font-size:180%">My Albums </li>
+            <% @folders.each do |folder| %>
+               <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left' %>
+            <% end %>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+            <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+            <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+        </div>
+   
+
+	</div>
+
+    <div class="jumbotron" style="min-width:550px;position:absolute;display:inline-block;margin-left:20px;float:left">
+    	<h2 class="form-signin-heading" style="margin-top:-5%;">Share Image
+      	</h2>
+      	<div class="list-group">
+   
+  		  	<div class="panel panel-default" style="width:500px">
+        		    <div class="panel-heading">
+      				    <h4 class="panel-title">
+      					    Friend List
+      				    </h4>
+  				      </div>
+  			
+        				<% @friends.each do |friend| %>
+        					<li class="list-group-item">
+                    <% if !Shareimage.exists?(@image_id, friend.id) %>
+        						  <%= friend.nick_name %> 
+        							<input type="button" name="Share" value="Share" onclick="shareimage(<%= friend.id%>,<%= current_user.id%>, <%= @image_id%>)" style="float:right">
+        						<% else %>
+                      <%= friend.nick_name %> 
+        							<input type="button" name="Cancel Share" value="Cancel Share" onclick="cancelshareimage(<%= friend.id%>, <%= @image_id%>)" style="float:right">
+        						<% end %>
+        					</li>
+        				<%end%>
+			    </div>
+		    </div>
+    </div>
+</div>

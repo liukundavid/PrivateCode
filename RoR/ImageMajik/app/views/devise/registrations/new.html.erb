@@ -1,0 +1,31 @@
+
+<div >
+<div class="jumbotron" style="width:50%; margin-left:auto; margin-right:auto">
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+	<h2 class="form-signin-heading">Register</h2>
+  <div><%= f.label :first_name, class:'form-signin-heading' %><br />
+  <%= f.text_field :first_name, class:'form-control' %></div>
+
+  <div><%= f.label :last_name, class:'form-signin-heading' %><br />
+  <%= f.text_field :last_name, class:'form-control' %></div>
+  
+  <div><%= f.label :nick_name, class:'form-signin-heading' %><br />
+  <%= f.text_field :nick_name, class:'form-control' %></div>
+
+  <div><%= f.label :email, class:'form-signin-heading' %><br />
+  <%= f.email_field :email, autofocus: true, class:'form-control' %></div>
+
+  <div><%= f.label :password %> <% if @validatable %><i></i><% end %><br />
+    <%= f.password_field :password, autocomplete: "off", class:'form-control', :placeholder=>'8 characters minimum' %></div>
+
+  <div><%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation, autocomplete: "off", class:'form-control' %></div>
+
+  <div ><%= f.submit "Sign up", class:'btn btn-lg btn-primary btn-block', style:'height:40px;margin-top:10px' %></div>
+<% end %>
+<div style="font-size: 15px"><%= render "devise/shared/links" %>
+</div>
+</div>
+

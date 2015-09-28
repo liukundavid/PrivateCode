@@ -1,0 +1,52 @@
+<div >
+	 <div class="jumbotron" style="float:left;">
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+            <% if current_user.pending_friends.length == 0%>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+            <% elsif current_user.pending_friends.length > 0 %>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+            <% end %>
+            <a href="<%=new_image_path(:folder_id => @folder)%>" class="list-group-item active" style="font-size:14px;background-color:green">Add an Image</a>
+            <%= link_to 'Remove Folder', @folder, method: :delete, data: { confirm: 'Are you sure?' },class:'list-group-item', style:'font-size:14px;color:red' %>
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:14px">Back to Albums</a>
+        </div>
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <li class="list-group-item" style="font-size:180%">My Albums </li>
+            <% @folders.each do |folder| %>
+                <% if folder.name == @folder.name %>
+                    <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left;background-color:green' %>
+                <% else%>
+                    <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left;' %>
+                <% end %>
+            <% end %>
+        </div>
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+            <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+            <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+        </div>
+    </div>
+
+
+
+
+	<div class="jumbotron" style="min-width:560px;position:absolute;display:inline-block;margin-left:20px;float:left">
+
+		<h2 class="form-signin-heading" style="margin-top:-2%;">New image</h2>
+
+		<%= render 'form' %>
+
+		<script>
+		    // back to the previous page
+            function back() {
+               history.back(); 
+            }
+        </script>
+             
+        <input type="button" name="back" value="Back" onclick="back()" style="color:gray">
+
+	</div>
+</div>

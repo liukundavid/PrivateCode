@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @image.name %>
+</p>
+
+<p>
+  <strong>Image:</strong>
+  <%= image_tag @image.avatar_url(:thumb) if @image.avatar? %>
+</p>
+
+<%= link_to 'Edit', edit_image_path(@image) %> |
+<%= link_to 'Back', :controller => "folders", :action => "show", :id => @image.folder_id%>

@@ -1,0 +1,258 @@
+<script type="text/javascript">
+
+// be friend with someone
+function befriend(userid) {
+var user = new FormData();
+user.append("friend_id", userid);
+  $.ajax({
+	url: '/befriend',
+  type: 'POST',
+  data: user,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+	});
+} 
+
+// confirm friend request
+function accept_friend(userid) {
+var user = new FormData();
+user.append("friend_id", userid);
+  	$.ajax({
+		url: '/accept_friend',
+	    type: 'POST',
+	    data: user,
+	    dataType: 'json',
+	    processData: false,
+		contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+	});
+} 
+// decline friend request
+function decline_friend(userid) {
+var user = new FormData();
+user.append("friend_id", userid);
+  $.ajax({
+	url: '/decline_friend',
+  type: 'DELETE',
+  data: user,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+  });
+}
+// cancel the request that wants to be friend with someone
+function cancel_friend(userid) {
+var user = new FormData();
+user.append("friend_id", userid);
+  $.ajax({
+	url: '/cancel_friend',
+  type: 'DELETE',
+  data: user,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+  });
+}
+// delete friend
+function delete_friend(userid) {
+var user = new FormData();
+user.append("friend_id", userid);
+  $.ajax({
+	url: '/delete_friend',
+  type: 'DELETE',
+  data: user,
+  dataType: 'json',
+  processData: false,
+	contentType: false,
+	complete: function(){
+		document.getElementById('notice').hidden = false;
+		location.reload();
+	},
+	success: function(data){
+      document.getElementById('notice').innerHTML = data.message
+     },
+  error: function(data) {
+			document.getElementById('notice').innerHTML = "error exists"
+		 }
+  });
+} 
+</script>
+
+
+<p id="notice" style="display:none"><%= notice %></p>
+<div  >
+
+	<div class="jumbotron" style="float:left;">
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+            <% if current_user.pending_friends.length == 0%>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+            <% elsif current_user.pending_friends.length > 0 %>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+            <% end %>
+            <a href="<%=new_folder_path%>" class="list-group-item active">Create A New Album</a>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <li class="list-group-item" style="font-size:180%">My Albums </li>
+            <% @folders.each do |folder| %>
+               <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left' %>
+            <% end %>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+            <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+            <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+        </div>
+       
+
+    </div>
+
+	<div class="jumbotron" style="min-width:500px;position:absolute;display:inline-block;margin-left:20px;float:left">
+		<div class="panel-group" id="accordion">
+
+		  	<div class="panel panel-default" style="width:500px">
+		    	
+		      		<h4 class="panel-title">
+		        		<a class="list-group-item" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+		          		My Friends
+		        		<span class="badge"><%=current_user.friends.length%><span></a>
+		     		 </h4>
+		   		
+
+			    <div id="collapseOne" class="panel-collapse collapse in">
+			   
+		        	<% if current_user.friends.length > 0 %>	
+			        	<ul class="list-group">
+							<% current_user.friends.each do |friend| %>
+								<li class="list-group-item">
+									<%= friend.nick_name %>	
+									<input type="button" name="" value="breakup" onclick="delete_friend(<%= friend.id%>)" style="float:right;color:red">
+								</li>
+							<%end%>
+						</ul>
+						
+					<% end %>
+			        
+		    	</div>
+			</div>
+		
+
+			<div class="panel panel-default">
+			    
+			      	<h4 class="panel-title">
+			        	<a  class="list-group-item" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+			          	Other users
+			        	</a>
+			      	</h4>
+			   
+			    <div id="collapseTwo" class="panel-collapse collapse">
+			    	<ul class="list-group">
+			        	<% @users.each do |user| %>
+						
+								<% friendship = Friendship.find_by_user_id_and_friend_id(current_user, user) %>
+								<% if friendship.nil? %>
+									<li class="list-group-item">
+										<%= user.nick_name %>
+										<input type="button" name="befriend" value="befriend" onclick="befriend(<%= user.id%>)" style="float:right;color:blue">
+									</li>
+						    	<% end %>
+							
+						<%end%>
+					</ul>
+			    </div>
+			</div>
+
+		    <div class="panel panel-default">
+			   
+			      	<h4 class="panel-title">
+			        	<a  class="list-group-item" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+			          	Pending
+			          	<% if current_user.pending_friends.length == 0 %>
+			        		<span class="badge"><%=current_user.pending_friends.length%><span></a>
+			        	<% elsif current_user.pending_friends.length > 0 %>
+			        		<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%><span></a>
+			        	<% end %>
+			      	</h4>
+			    
+			    <div id="collapseThree" class="panel-collapse collapse">
+			      	<ul class="list-group">
+			        	<% if current_user.pending_friends.length > 0 %>	
+							<% current_user.pending_friends.each do |friend| %>
+							<li class="list-group-item">
+								<%= friend.nick_name %>
+								<input type="button" name="Decline" value="Decline" onclick="decline_friend(<%= friend.id%>)" style=" float:right;color:red">
+								<input type="button" name="Accept" value="Accept" onclick="accept_friend(<%= friend.id%>)" style="float:right;color:green">	
+							</li>
+							<%end%>
+						<% end %>
+			        </ul>
+			    </div>
+			</div>
+
+		    <div class="panel panel-default">
+			    
+			      	<h4 class="panel-title">
+			        	<a  class="list-group-item" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+			          	Requested
+			        	<span class="badge"><%=current_user.requested_friends.size%><span></a>
+			      	</h4>
+			   
+			    <div id="collapseFour" class="panel-collapse collapse">
+			      	<ul class="list-group">
+			        	<% if current_user.requested_friends.size > 0 %>	
+							<% current_user.requested_friends.each do |friend| %>
+								<li class="list-group-item">
+									<%= friend.nick_name %>
+									<input type="button" name="cancel" value="cancel" onclick="cancel_friend(<%= friend.id%>)" class="" style="float:right;color:red">
+								</li>
+							<%end%>
+						<% end %>
+		        	</ul>
+			    </div>
+			</div>
+		</div>
+
+	</div>
+
+</div>

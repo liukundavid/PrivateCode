@@ -1,0 +1,40 @@
+
+<div>
+
+<div class="jumbotron" style="float:left;">
+
+                <div class="list-group" style="display:block;min-width:200px">
+                    <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+                    <% if current_user.pending_friends.length == 0%>
+                        <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+                    <% elsif current_user.pending_friends.length > 0 %>
+                        <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+                    <% end %>
+                    <a href="<%=folders_path%>" class="list-group-item" style="font-size:14px">Back to Albums</a>
+                </div>
+                <div class="list-group" style="display:block;min-width:200px">
+                    <li class="list-group-item" style="font-size:180%">My Albums </li>
+                    <% @folders.each do |folder| %>
+                       <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left' %>
+                    <% end %>
+                </div>
+                <div class="list-group" style="display:block;min-width:200px">
+                    <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+                    <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+                    <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+                </div>
+           
+
+        </div>
+
+        <div class="jumbotron" style="min-width:400px;position:absolute;display:inline-block;margin-left:20px;float:left">
+		    <div class="col-xs-12 col-sm-9" style="min-width:400px;max-width:590px;display:block">
+
+				<h2 class="form-signin-heading" style="margin-top:-2%;" >Edit Image</h2>
+
+					<%= render 'form' %>
+			</div>
+		</div>
+
+
+</div>

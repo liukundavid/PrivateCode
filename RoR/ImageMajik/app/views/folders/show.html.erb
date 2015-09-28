@@ -1,0 +1,245 @@
+
+<% title @folder.name %>
+<p id="notice" style="display:none"><%= notice %></p>
+
+<div >
+
+    <div class="jumbotron" style="float:left;">
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+            <% if current_user.pending_friends.length == 0%>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+            <% elsif current_user.pending_friends.length > 0 %>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+            <% end %>
+            <a href="<%=new_image_path(:folder_id => @folder)%>" class="list-group-item active" style="font-size:14px;background-color:green">Add an Image</a>
+            <%= link_to 'Remove Folder', @folder, method: :delete, data: { confirm: 'Are you sure?' },class:'list-group-item', style:'font-size:14px;color:red' %>
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:14px">Back to Albums</a>
+        </div>
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <li class="list-group-item" style="font-size:180%">My Albums </li>
+            <% @folders.each do |folder| %>
+                <% if folder.name == @folder.name %>
+                    <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left;background-color:green' %>
+                <% else%>
+                    <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left;' %>
+                <% end %>
+            <% end %>
+        </div>
+        
+        <div class="panel-group" id="accordion"  style="display:block;min-width:200px">
+            <div class="panel panel-default">
+                <a class="list-group-item active" data-toggle="collapse" href="#collapseOne" style="font-size:20px"> Tag</a>
+
+                <div id="collapseOne" class="list-group">
+                    <%= link_to "All", @folder, class:'list-group-item'  %>
+
+                    <% tag_cloud Image.tag_counts, %w[s m l] do |tag, css_class| %>
+                        <a href="<%=folder_path(@folder, :tag => tag.name)%>" class="list-group-item" style="font-size:20px;"><%=tag.name%></a>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+            <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+            <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+        </div>
+    </div>
+
+
+    <div class="jumbotron" style="min-width:560px;position:absolute;display:inline-block;margin-left:20px;float:left">
+
+            <div id="container" style="width:590px;max-width:590px;position:relative;display:table">
+                <% 
+                    # Get image number to arrange the position of images
+                    count = @images.size
+              
+                %>
+
+                <% if count > 6 %>
+                    <%
+                        # Different amount of images will be arranged differently
+                        # Image page has three columns
+                        # The number of images in each column will be calculated by the code below
+                        if count % 3 == 1
+                            part_1 = (count/3).to_i
+                            part_2 = part_1 + 1
+                            part_3 = part_2 + part_1
+                            image_1 = @images[0..part_1]
+                            image_2 = @images[part_2..part_3]
+                            image_3 = @images[part_3+1..count-1]
+                        elsif count % 3 == 2
+                            part_1 = (count/3).to_i
+                            part_2 = part_1 + 1
+                            part_3 = part_2 + part_1 + 1
+                            image_1 = @images[0..part_1]
+                            image_2 = @images[part_2..part_3]
+                            image_3 = @images[part_3+1..count-1]
+                        else
+                            part_1 = (count/3).to_i - 1
+                            part_2 = part_1 + 1
+                            part_3 = part_2 + part_1
+                            image_1 = @images[0..part_1]
+                            image_2 = @images[part_2..part_3]
+                            image_3 = @images[part_3+1..count-1]
+                        end
+
+                    %>
+
+                    <div style="float:left;width:195px">
+                        <% image_1.each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                            
+                            <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                    <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                    </img>                    
+                                </a>
+                            </div>  
+                            
+                        <% end %>
+                    </div>
+
+                    <div style="float:left;width:195px">
+                        <% image_2.each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                            
+                                <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                    <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                        <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                        </img>                    
+                                    </a>
+                                </div>  
+                        <% end %>
+                    </div>
+
+                    <div style="float:left;width:195px">
+                        <% image_3.each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                                <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                    <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                        <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                        </img>                    
+                                    </a>
+                                </div>  
+                        <% end %>
+                    </div>
+                <% elsif count <= 6 and count > 3 %>
+                    <div style="float:left;width:195px">
+                        <% @images[0..1].each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                            
+                            <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                    <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                    </img>                    
+                                </a>
+                            </div>  
+                            
+                        <% end %>
+                    </div>
+
+                    <div style="float:left;width:195px">
+                        <% @images[2..3].each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                            
+                                <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                    <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                        <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                        </img>                    
+                                    </a>
+                                </div>  
+                        <% end %>
+                    </div>
+
+                    <div style="float:left;width:195px">
+                        <% @images[4..count-1].each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                                <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                    <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                        <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                        </img>                    
+                                    </a>
+                                </div>  
+                        <% end %>
+                    </div>
+
+                <% elsif count <= 3 and count > 0 %>
+                    <div >
+                        <% @images.each do |image| %>
+                        <%  target_id = "#" + image.id.to_s  %>
+                                <div class="item_" style="position:relative;float:left;margin-left:1px;margin-top:1px;">
+                                    <a href="" data-toggle="modal" data-target="<%=target_id%>" >                 
+                                        <img style="max-width:100%;max-height:100%" src="<%=image.avatar_url()%>"  >
+                                        </img>                    
+                                    </a>
+                                </div>  
+                        <% end %>
+                    </div>
+ 
+                <% elsif count == 0  %>
+                        <div>
+                            <img style="max-width:600px;" src="../uploads/image/system_image/no_image.jpg"  >
+                            </img> 
+                        </div>
+                <% end %>
+
+
+                <% @images.each do |image| %>
+                    <div class="modal fade" style="margin-top:4%;" id="<%=image.id.to_s%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" style="width:120%;margin-left:-10%;z-index:99999999">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            
+                                </div>
+                                <div class="modal-body" style="width:100%;height:100%" >
+                                    <img style="width:100%;height:100%;overflow:auto" src="<%=image.avatar_url()%>" ></img> 
+                                </div>
+                                <div class="modal-footer">
+
+                                    <div style="text-align:center">
+                                        <h2><%= image.name %> 
+                                        Tags: <%= raw image.tag_list.map { |t| link_to t, tag_path(t) }.join(', ') %></h2>
+                                    </div>
+                                    <% if current_user.id == image.user_id%>
+                                        <a class="btn btn-sm btn-success" href="<%=image_share_path(image)%>" style="color:#fffff0; font-size:12px;margin-left:0px" >Share</a>
+
+                                        <% 
+                                        version_image_id_list = Image.search_image_versions(image.id).map{|images| images.id} %>
+                                        <% if version_image_id_list.size > 0 %>
+                                            <a href="<%=folder_path(@folder, :image_ids => version_image_id_list)%>"  class="btn btn-sm btn-success" style="color:#fffff0; font-size:12px;margin-left:0px">Versions</a>
+                                        <% end %>
+                                        <% 
+                                        parent_image_id_list = Image.search_image_parent(image.parent_id).map{|images| images.id} %>
+                                        <% if parent_image_id_list.size  > 0 %>
+                                            <a href="<%=folder_path(@folder, :image_ids => parent_image_id_list)%>"  class="btn btn-sm btn-success" style="color:#fffff0; font-size:12px;margin-left:0px">Parent</a>
+                                        <% end %>
+                                        
+                                        <a class="btn btn-sm btn-success" href="<%=edit_image_path(image)%>" style="color:#fffff0; font-size:12px" >Edit</a>
+                                        <a class="btn btn-sm btn-success" href="<%=edit_filter_image_path(image)%>" style="color:#fffff0; font-size:12px" >Filter</a>
+                                        <a class="btn btn-sm btn-success" href="<%=delete_image_path(image)%>" style="color:#fffff0; font-size:12px" >Remove</a>  
+                                    <% else %>
+                                        <a class="btn btn-sm btn-success" href="<%=download_image_path(image)%>" style="color:#fffff0; font-size:13px;margin-left:0px" >Download</a>
+                                    <% end %>
+
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+     
+    </div>
+            
+       
+    
+
+
+</div>

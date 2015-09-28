@@ -1,0 +1,377 @@
+
+<p id="notice" style="display:none"><%= notice %></p>
+<div >
+
+    <div class="jumbotron" style="float:left;">
+
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=folders_path%>" class="list-group-item" style="font-size:22px">Home</a>
+            <% if current_user.pending_friends.length == 0%>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge"><%=current_user.pending_friends.length%></span></a>
+            <% elsif current_user.pending_friends.length > 0 %>
+                <a href="<%=friendship_index_path%>" class="list-group-item">Friend Setting<span class="badge" style="background-color:red"><%=current_user.pending_friends.length%></span></a>
+            <% end %>
+            <a href="<%=new_folder_path%>" class="list-group-item active">Create A New Album</a>
+             <a href="<%=folders_path%>" class="list-group-item" style="font-size:14px">Back to Albums</a>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <li class="list-group-item" style="font-size:180%">My Albums </li>
+            <% @folders.each do |folder| %>
+               <%= link_to folder.name, folder,class:'list-group-item',style:'font-size:160%; text-align:left' %>
+            <% end %>
+        </div>
+        <div class="list-group" style="display:block;min-width:200px">
+            <a href="<%=sharedfolders_path%>" class="list-group-item" style="font-size:140%">Shared Albums</a>
+            <a href="<%=sharedimages_path%>" class="list-group-item" style="font-size:140%">Shared Images</a>
+            <a href="<%=trash_folders_path%>" class="list-group-item list-group-item-danger" style="font-size:140%">Trash Bin<span class="badge"><%= current_user.images.where(is_deleted: true).size%></span></a>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+    <div class="jumbotron" style="min-width:560px;position:absolute;display:inline-block;margin-left:20px;float:left">
+        <div style="height:485px;width:640px">
+            <div style="width:100%;height:100%;float:left;text-align:center;">
+
+              <img id="modify"  src="<%=@image.avatar_url()%>" data-caman-hidpi="<%=@image.avatar_url()%>" style="max-height:100%;max-width:100%; align:center;border-style:solid; border-width:3px;border-color:#d7d5d2" >
+  
+            </div>
+
+            <div id="Filters" style="width:500px;height:300px;margin-top:20px;float:left">
+            
+              <div class="Filter"  style="width:33%">
+                <div class="FilterName" style="width:80px" >
+                  <p style="font-size:15px">brightness</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="-100"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="brightness"
+                    style="width:150px"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">contrast</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="-100"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="contrast"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">saturation</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="-100"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="saturation"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">vibrance</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="-100"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="vibrance"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">exposure</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="-100"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="exposure"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">hue</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="hue"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">sepia</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="sepia"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">gamma</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value="0"
+                    data-filter="gamma"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">noise</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="noise"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">clip</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="clip"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">sharpen</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="0"
+                    data-filter="sharpen"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            
+              <div class="Filter" style="width:33%">
+                <div class="FilterName" style="width:80px">
+                  <p style="font-size:15px">stackBlur</p>
+                </div>
+
+                <div class="FilterSetting" style="float:left;margin-top:10px">
+                  <input
+                    type="range" 
+                    min="0"
+                    max="20"
+                    step="1"
+                    value="0"
+                    data-filter="stackBlur"
+                  >
+                  <span class="FilterValue">0</span>
+                </div>
+              </div>
+            </div>
+
+
+            <div style="width:150px;float:left;margin-top:10px;margin-left:-5%">
+              <script>
+                // refresh page
+                function reset() {
+                    location.reload();
+                };
+
+                //back to the previous page
+                function back() {
+                    history.back(); 
+                }
+                
+                //convert image to Blob and return Blob data of the image in jpeg format
+                function imageDataURLtoBlob(imageDataURL) {                
+                  var image_binary = atob(imageDataURL.split(',')[1]);
+                  var array = [];
+                  for(var i = 0; i < image_binary.length; i++) {
+                      array.push(image_binary.charCodeAt(i));
+                  }
+
+                  return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+                }
+
+
+                //get Blob data of the image and send it to server
+                function get_image(image) {
+                    var canvas = document.getElementById("modify");
+                    var img = canvas.toDataURL("image/jpeg");
+                    
+                    var file= imageDataURLtoBlob(img);
+                    var fd = new FormData();
+                    fd.append("image", file);
+                    fd.append("id", image);
+
+                    $.ajax({
+                       url: "/images/create_version",
+                       type: "POST",
+                       data: fd,
+                       processData: false,
+                       contentType: false,
+                       complete: function(){
+
+                        document.getElementById('notice').hidden = false;
+                      },
+                       success: function(data){
+                        window.alert("Save Success");
+                        history.back();
+                        document.getElementById('notice').innerHTML = data.image_url + data.message;
+                      },
+                       error: function(data) {
+                        window.alert("Save failed!");
+                        document.getElementById('notice').innerHTML = "error exists"
+                      }
+                    });
+   
+                } 
+
+
+              </script>
+              <p id="notice" style="display:none"><%= notice %></p>
+              
+              <input type="button" name="reset" value="Reset" onclick="reset()" class="btn btn-lg btn-primary btn-block" style="width:100px;margin-left:30%;margin-top:30%">
+              <input type="button" name="save" value="Save" onclick="get_image(<%= @image.id%>)" class="btn btn-lg btn-primary btn-block" style="width:100px;margin-left:30%;margin-top:30%">
+
+
+              <input type="button" name="back" value="Back" onclick="back()" class="btn btn-lg btn-primary btn-block" style="width:100px;margin-left:30%;margin-top:30%">
+
+            </div>
+
+
+            <div style="width:600px;">
+
+                  <div id="PresetFilters" >
+
+                    <a data-preset="vintage" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px" >Vintage</a>
+                    <a data-preset="lomo" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Lomo</a>
+                    <a data-preset="clarity" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Clarity</a>             
+                    <a data-preset="sinCity" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Sin City</a>            
+                    <a data-preset="sunrise" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Sunrise</a>                
+                    <a data-preset="bright" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Bright</a>
+                    <a data-preset="orangePeel" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Orange Peel</a>                  
+                    <a data-preset="love" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Love</a>                  
+                    <a data-preset="grungy" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Grungy</a>
+                    <a data-preset="jarques" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Jarques</a>                  
+                    <a data-preset="pinhole" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Pinhole</a>
+                    <a data-preset="oldBoot" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Old Boot</a>
+                    <a data-preset="glowingSun" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Glowing Sun</a>
+                    <a data-preset="hazyDays" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Hazy Days</a>                  
+                    <a data-preset="herMajesty" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Her Majesty</a>
+                    <a data-preset="nostalgia" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Nostalgia</a>                 
+                    <a data-preset="hemingway" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Hemingway</a>                 
+                    <a data-preset="concentrate" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Concentrate</a>
+                    <a data-preset="blackAndWhite" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Black White</a>
+                    <a data-preset="crossProcess" style="width:100px;margin-bottom:1px;margin-top:15px;margin-left:2px">Cross</a>
+
+                  </div>
+                      
+            </div>
+
+        </div>
+
+        <div>
+            
+
+            
+        </div>
+
+    </div>
+
+
+</div>
+
